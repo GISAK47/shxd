@@ -141,6 +141,46 @@ body{background:var(--bg);color:var(--text);font-family:'Be Vietnam Pro',sans-se
   margin-right:10px;transition:border-color .15s;}
 .btn-retry:hover{border-color:var(--gold)}
 
+/* Review section */
+.review-section{margin-top:32px;text-align:left}
+.review-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.review-header h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--text)}
+.review-filters{display:flex;gap:6px}
+.filter-btn{background:var(--surface);border:1px solid var(--border);color:var(--text-muted);
+  border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;
+  font-family:'Be Vietnam Pro',sans-serif;transition:all .15s;}
+.filter-btn:hover,.filter-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.08)}
+.filter-btn.active-wrong{border-color:var(--red);color:var(--red);background:rgba(248,81,73,.07)}
+.review-list{display:flex;flex-direction:column;gap:12px}
+.review-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;
+  border-left:3px solid var(--border);transition:border-color .2s;}
+.review-card.correct{border-left-color:var(--green)}
+.review-card.wrong{border-left-color:var(--red)}
+.review-card.skipped{border-left-color:var(--text-muted)}
+.review-meta{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.review-num{font-size:11px;color:var(--text-muted);font-weight:600;letter-spacing:.5px}
+.review-status{font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.5px}
+.review-status.correct{background:rgba(63,185,80,.15);color:var(--green)}
+.review-status.wrong{background:rgba(248,81,73,.12);color:var(--red)}
+.review-status.skipped{background:rgba(139,149,167,.12);color:var(--text-muted)}
+.review-tag{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600;letter-spacing:.5px}
+.review-tag.pl{background:rgba(88,166,255,.12);color:var(--blue);border:1px solid rgba(88,166,255,.2)}
+.review-tag.cm{background:rgba(201,168,76,.12);color:var(--gold);border:1px solid rgba(201,168,76,.2)}
+.review-q{font-size:14px;line-height:1.6;color:var(--text);margin-bottom:14px;font-weight:500}
+.review-opts{display:flex;flex-direction:column;gap:6px}
+.review-opt{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;border-radius:7px;
+  font-size:13px;line-height:1.5;border:1px solid transparent;}
+.review-opt.neutral{background:var(--surface2);color:var(--text-muted)}
+.review-opt.correct-ans{background:rgba(63,185,80,.1);border-color:rgba(63,185,80,.3);color:var(--green)}
+.review-opt.wrong-ans{background:rgba(248,81,73,.08);border-color:rgba(248,81,73,.25);color:var(--red)}
+.review-opt-key{width:20px;height:20px;flex-shrink:0;border-radius:4px;display:flex;align-items:center;
+  justify-content:center;font-size:10px;font-weight:700;background:var(--border);color:var(--text-muted);}
+.review-opt.correct-ans .review-opt-key{background:var(--green);color:#0d1117}
+.review-opt.wrong-ans .review-opt-key{background:var(--red);color:#fff}
+.review-explain{margin-top:10px;font-size:12px;color:var(--text-muted);padding:8px 10px;
+  background:var(--surface2);border-radius:6px;display:flex;gap:6px}
+.empty-filter{text-align:center;padding:32px;color:var(--text-muted);font-size:13px}
+
 .error-screen{text-align:center;padding:60px 20px}
 .error-screen .err-icon{font-size:48px;margin-bottom:16px}
 .error-screen h3{font-size:18px;margin-bottom:8px;color:var(--red)}
@@ -160,7 +200,7 @@ body{background:var(--bg);color:var(--text);font-family:'Be Vietnam Pro',sans-se
   <div class="header-icon">🏛</div>
   <div>
     <div class="header-title">Sát Hạch Chứng Chỉ Hành Nghề</div>
-    <div class="header-sub">Thiết Kế Quy Hoạch Xây Dựng – Hạng III by NNK</div>
+    <div class="header-sub">Thiết Kế Quy Hoạch Xây Dựng – Hạng III</div>
   </div>
 </header>
 <div class="container" id="app"></div>
@@ -447,6 +487,85 @@ function renderExam() {
   <div class="dot-nav">${dots}</div>`;
 }
 
+// Review filter state
+let reviewFilter = "all"; // all | wrong | correct | skipped
+
+function setReviewFilter(f) {
+  reviewFilter = f;
+  const reviewEl = document.getElementById("reviewList");
+  const btns = document.querySelectorAll(".filter-btn");
+  btns.forEach(b => {
+    b.classList.remove("active","active-wrong");
+    if (b.dataset.f === f) {
+      b.classList.add(f === "wrong" ? "active-wrong" : "active");
+    }
+  });
+  if (reviewEl) reviewEl.innerHTML = renderReviewList();
+}
+
+function renderReviewList() {
+  const r = state.result;
+  if (!r || !r.detail) return "";
+
+  // Build a map from question id -> question data
+  const qMap = {};
+  state.questions.forEach(q => { qMap[q.id] = q; });
+
+  let items = r.detail.map((d, idx) => {
+    const q = qMap[d.id] || {};
+    const status = !d.chosen ? "skipped" : d.isRight ? "correct" : "wrong";
+    return { ...d, q, status, idx };
+  });
+
+  if (reviewFilter === "wrong")   items = items.filter(x => x.status === "wrong");
+  if (reviewFilter === "correct") items = items.filter(x => x.status === "correct");
+  if (reviewFilter === "skipped") items = items.filter(x => x.status === "skipped");
+
+  if (items.length === 0) {
+    const labels = { wrong:"sai", correct:"đúng", skipped:"bỏ qua" };
+    return `<div class="empty-filter">Không có câu nào ${labels[reviewFilter] || ""} 🎉</div>`;
+  }
+
+  return items.map(({ d, q, status, idx, id, chosen, correct, isRight, section }) => {
+    const opts = q.opts || {};
+    const isPhapLuat = section === "phap_luat";
+    const tagClass = isPhapLuat ? "pl" : "cm";
+    const tagLabel = isPhapLuat ? "Pháp luật" : "Chuyên môn";
+
+    const statusLabel = status === "correct" ? "✓ Đúng" : status === "wrong" ? "✗ Sai" : "— Bỏ qua";
+
+    const optHtml = ["a","b","c","d"].filter(k => opts[k]).map(k => {
+      let cls = "neutral";
+      let marker = "";
+      if (k === correct && k === chosen) { cls = "correct-ans"; marker = " ✓"; }
+      else if (k === correct)            { cls = "correct-ans"; marker = " ← Đáp án đúng"; }
+      else if (k === chosen && !isRight) { cls = "wrong-ans";   marker = " ← Bạn chọn"; }
+      return `<div class="review-opt ${cls}">
+        <span class="review-opt-key">${k.toUpperCase()}</span>
+        <span>${opts[k]}${marker ? `<strong>${marker}</strong>` : ""}</span>
+      </div>`;
+    }).join("");
+
+    let explainHtml = "";
+    if (status === "wrong") {
+      explainHtml = `<div class="review-explain">💡 <span>Đáp án đúng là <strong>${correct.toUpperCase()}</strong>${chosen ? `, bạn đã chọn <strong>${chosen.toUpperCase()}</strong>` : ""}.</span></div>`;
+    } else if (status === "skipped") {
+      explainHtml = `<div class="review-explain">⚠️ <span>Bạn chưa trả lời câu này. Đáp án đúng là <strong>${correct.toUpperCase()}</strong>.</span></div>`;
+    }
+
+    return `<div class="review-card ${status}">
+      <div class="review-meta">
+        <span class="review-num">CÂU ${idx + 1}</span>
+        <span class="review-status ${status}">${statusLabel}</span>
+        <span class="review-tag ${tagClass}">${tagLabel}</span>
+      </div>
+      <div class="review-q">${q.question || "(Không có nội dung câu hỏi)"}</div>
+      <div class="review-opts">${optHtml}</div>
+      ${explainHtml}
+    </div>`;
+  }).join("");
+}
+
 function renderResult() {
   const r = state.result;
   if (!r || r._offline) {
@@ -459,7 +578,12 @@ function renderResult() {
     </div>`;
   }
 
-  const {plScore, cmScore, total, passed, passConditions} = r;
+  const {plScore, cmScore, total, passed, passConditions, detail} = r;
+  reviewFilter = "all";
+
+  const wrongCount   = detail ? detail.filter(d => d.chosen && !d.isRight).length : 0;
+  const correctCount = detail ? detail.filter(d => d.isRight).length : 0;
+  const skippedCount = detail ? detail.filter(d => !d.chosen).length : 0;
 
   return `
   <div class="result">
@@ -485,7 +609,21 @@ function renderResult() {
     </div>
     <p style="font-size:12px;color:var(--text-muted);margin-bottom:20px">✅ Kết quả đã được ghi vào hệ thống</p>
     <button class="btn-retry" onclick="retry()">Làm lại</button>
-  </div>`;
+  </div>
+
+  ${detail ? `
+  <div class="review-section">
+    <div class="review-header">
+      <h3>📋 Xem lại bài làm</h3>
+      <div class="review-filters">
+        <button class="filter-btn active" data-f="all"     onclick="setReviewFilter('all')">Tất cả (${detail.length})</button>
+        <button class="filter-btn"        data-f="correct" onclick="setReviewFilter('correct')">✓ Đúng (${correctCount})</button>
+        <button class="filter-btn"        data-f="wrong"   onclick="setReviewFilter('wrong')">✗ Sai (${wrongCount})</button>
+        ${skippedCount > 0 ? `<button class="filter-btn" data-f="skipped" onclick="setReviewFilter('skipped')">— Bỏ qua (${skippedCount})</button>` : ""}
+      </div>
+    </div>
+    <div class="review-list" id="reviewList">${renderReviewList()}</div>
+  </div>` : ""}`;
 }
 
 function renderError() {
