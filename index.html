@@ -27,14 +27,12 @@ body{background:var(--bg);color:var(--text);font-family:'Be Vietnam Pro',sans-se
 .header-sub{font-size:11px;color:var(--text-muted);margin-top:2px}
 .container{max-width:780px;margin:0 auto;padding:24px 20px 60px}
 
-/* Loading */
 .loading{text-align:center;padding:80px 20px;}
 .spinner{width:44px;height:44px;border:3px solid var(--border);border-top-color:var(--gold);
   border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 20px;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading p{color:var(--text-muted);font-size:14px}
 
-/* Welcome */
 .welcome{text-align:center;padding:50px 20px 40px}
 .welcome-badge{display:inline-block;background:linear-gradient(135deg,rgba(201,168,76,.15),rgba(201,168,76,.05));
   border:1px solid rgba(201,168,76,.3);border-radius:100px;padding:6px 18px;font-size:12px;
@@ -51,7 +49,6 @@ body{background:var(--bg);color:var(--text);font-family:'Be Vietnam Pro',sans-se
   border:1px solid rgba(63,185,80,.2);border-radius:var(--radius);padding:14px 18px;margin-bottom:24px;text-align:left;font-size:13px;}
 .pass-box strong{color:var(--green)}
 
-/* Form */
 .form-section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px;text-align:left;}
 .form-section h3{font-size:14px;font-weight:700;margin-bottom:16px;color:var(--text)}
 .form-row{margin-bottom:14px;}
@@ -70,7 +67,6 @@ body{background:var(--bg);color:var(--text);font-family:'Be Vietnam Pro',sans-se
 .btn-start:hover{opacity:.9;transform:translateY(-1px)}
 .btn-start:disabled{opacity:.5;cursor:not-allowed;transform:none}
 
-/* Exam */
 .exam-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
 .progress-text{font-size:13px;color:var(--text-muted)}
 .progress-text span{color:var(--text);font-weight:600}
@@ -120,11 +116,9 @@ body{background:var(--bg);color:var(--text);font-family:'Be Vietnam Pro',sans-se
 .dot.current{border-color:var(--gold);background:rgba(201,168,76,.15);color:var(--gold)}
 .dot.answered{background:rgba(201,168,76,.12);border-color:rgba(201,168,76,.4);color:var(--gold-light)}
 
-/* Submitting overlay */
 .submitting{text-align:center;padding:80px 20px}
 .submitting p{color:var(--text-muted);font-size:14px;margin-top:16px}
 
-/* Result */
 .result{text-align:center;padding:36px 10px}
 .result-badge{width:96px;height:96px;margin:0 auto 20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:42px;border:3px solid;}
 .result-badge.pass{border-color:var(--green);background:rgba(63,185,80,.1);box-shadow:0 0 40px rgba(63,185,80,.15)}
@@ -147,7 +141,6 @@ body{background:var(--bg);color:var(--text);font-family:'Be Vietnam Pro',sans-se
   margin-right:10px;transition:border-color .15s;}
 .btn-retry:hover{border-color:var(--gold)}
 
-/* Error */
 .error-screen{text-align:center;padding:60px 20px}
 .error-screen .err-icon{font-size:48px;margin-bottom:16px}
 .error-screen h3{font-size:18px;margin-bottom:8px;color:var(--red)}
@@ -173,7 +166,7 @@ body{background:var(--bg);color:var(--text);font-family:'Be Vietnam Pro',sans-se
 <div class="container" id="app"></div>
 
 <script>
-// ⚠️  THAY BẰNG URL WEB APP CỦA BẠN SAU KHI DEPLOY APPS SCRIPT
+// ✅ ĐÃ CẬP NHẬT URL ĐÚNG (exec URL, không phải echo URL)
 const API_URL = "https://script.google.com/macros/s/AKfycbz4-wU1_m0xWmTVf4Co4AC3SYaLQ3ZISmqcXrEJwgBrDJsjtMkr1N-eJxUMJH6TiVtS/exec";
 
 const TOTAL_TIME = 30 * 60;
@@ -185,7 +178,7 @@ const MAX_CM     = 20;
 let state = {
   screen:    "welcome",
   questions: [],
-  answers:   {},      // index -> chosen key
+  answers:   {},
   current:   0,
   timeLeft:  TOTAL_TIME,
   timerInt:  null,
@@ -197,9 +190,13 @@ let state = {
 
 // ──────────────────────────────────────────────────
 //  API calls
+//  FIX CORS: Dùng Content-Type: text/plain để tránh preflight OPTIONS
+//  Apps Script không hỗ trợ CORS preflight với application/json
 // ──────────────────────────────────────────────────
 async function fetchQuestions() {
-  const res = await fetch(API_URL + "?action=getQuestions");
+  const res = await fetch(API_URL + "?action=getQuestions", {
+    redirect: "follow"
+  });
   if (!res.ok) throw new Error("HTTP " + res.status);
   const data = await res.json();
   if (!data.questions) throw new Error("Không có câu hỏi");
@@ -207,13 +204,17 @@ async function fetchQuestions() {
 }
 
 async function submitToAPI(payload) {
+  // ✅ FIX: Dùng text/plain thay vì application/json
+  //    Tránh CORS preflight request mà Apps Script không xử lý được
   const res = await fetch(API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
+    method:   "POST",
+    redirect: "follow",
+    headers:  { "Content-Type": "text/plain;charset=utf-8" },
+    body:     JSON.stringify(payload)
   });
   if (!res.ok) throw new Error("HTTP " + res.status);
-  return await res.json();
+  const text = await res.text();
+  return JSON.parse(text);
 }
 
 // ──────────────────────────────────────────────────
@@ -278,7 +279,6 @@ async function startExam() {
   state.userName  = name;
   state.userEmail = email;
 
-  // Show loading
   state.screen = "loading";
   render();
 
@@ -293,7 +293,7 @@ async function startExam() {
     render();
     startTimer();
   } catch (e) {
-    state.screen = "error";
+    state.screen   = "error";
     state.errorMsg = e.message;
     render();
   }
@@ -308,7 +308,6 @@ async function doSubmit(auto = false) {
   }
   stopTimer();
 
-  // Build answer payload
   const answers = state.questions.map((q, i) => ({
     id:     q.id,
     chosen: state.answers[i] || null
@@ -319,17 +318,16 @@ async function doSubmit(auto = false) {
 
   try {
     const result = await submitToAPI({
-      action:    "submit",
-      name:      state.userName,
-      email:     state.userEmail,
+      action:   "submit",
+      name:     state.userName,
+      email:    state.userEmail,
       answers,
-      timeUsed:  timeUsed()
+      timeUsed: timeUsed()
     });
     state.result = result;
     state.screen = "result";
     render();
   } catch (e) {
-    // Fallback: chấm tạm offline (không ghi sheet)
     state.screen = "result";
     state.result = { _offline: true, error: e.message };
     render();
@@ -393,13 +391,14 @@ function renderSubmitting() {
 }
 
 function renderExam() {
-  const q       = state.questions[state.current];
-  const chosen  = state.answers[state.current];
-  const total   = state.questions.length;
-  const done    = Object.keys(state.answers).length;
-  const pct     = ((state.current + 1) / total * 100).toFixed(1);
-  const plDone  = state.questions.filter((qq,i) => state.answers[i] !== undefined && qq._section === "pl").length;
-  const cmDone  = state.questions.filter((qq,i) => state.answers[i] !== undefined && qq._section === "chuyen_mon").length;
+  const q      = state.questions[state.current];
+  const chosen = state.answers[state.current];
+  const total  = state.questions.length;
+  const done   = Object.keys(state.answers).length;
+  const pct    = ((state.current + 1) / total * 100).toFixed(1);
+
+  const plDone = state.questions.filter((qq,i) => state.answers[i] !== undefined && qq.section === "phap_luat").length;
+  const cmDone = state.questions.filter((qq,i) => state.answers[i] !== undefined && qq.section !== "phap_luat").length;
 
   const dots = state.questions.map((qq, i) => {
     let cls = "dot" + (i === state.current ? " current" : state.answers[i] !== undefined ? " answered" : "");
@@ -414,7 +413,8 @@ function renderExam() {
     </button>`;
   }).join("");
 
-  const tag = q._section === "phap_luat"
+  const isPhapLuat = q.section === "phap_luat";
+  const tag = isPhapLuat
     ? `<span class="section-tag pl">Pháp luật</span>`
     : `<span class="section-tag cm">Chuyên môn</span>`;
 
@@ -493,11 +493,11 @@ function renderError() {
   <div class="error-screen">
     <div class="err-icon">🔌</div>
     <h3>Không thể kết nối API</h3>
-    <p>Vui lòng kiểm tra lại cấu hình API URL trong file <code>index.html</code></p>
+    <p>Vui lòng kiểm tra Apps Script đã được deploy với quyền <strong>"Anyone"</strong></p>
     <div class="config-box">
-      Mở file <code>index.html</code>, tìm dòng:<br><br>
-      <code>const API_URL = "https://script.google.com/..."</code><br><br>
-      Thay bằng URL Web App sau khi deploy Apps Script.
+      Trong Apps Script:<br><br>
+      <code>Deploy → Manage deployments → Edit</code><br><br>
+      Đặt <code>Who has access</code> thành <code>Anyone</code>
     </div>
     <p style="font-size:12px;color:var(--text-muted)">${state.errorMsg || ""}</p>
     <button class="btn-retry" onclick="retry()">← Quay lại</button>
