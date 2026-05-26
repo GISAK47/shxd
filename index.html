@@ -447,7 +447,7 @@ function renderExam() {
 
   const opts = ["a","b","c","d"].filter(k => q.opts[k]).map(k => {
     const sel = chosen === k ? " selected" : "";
-    return `<button class="opt-btn${sel}" onclick="pick('${k}')" ${chosen ? "disabled" : ""}>
+    return `<button class="opt-btn${sel}" onclick="pick('${k}')">
       <span class="opt-key">${k.toUpperCase()}</span>
       <span class="opt-text">${q.opts[k]}</span>
     </button>`;
@@ -475,7 +475,7 @@ function renderExam() {
     <div class="q-number">CÂU ${state.current+1}</div>
     <div class="q-text">${q.question}</div>
     <div class="options">${opts}</div>
-    ${chosen ? `<div style="font-size:12px;color:var(--text-muted);margin-top:12px">✓ Đã chọn đáp án ${chosen.toUpperCase()}</div>` : ""}
+    ${chosen ? `<div style="font-size:12px;color:var(--text-muted);margin-top:12px">✓ Đã chọn đáp án ${chosen.toUpperCase()} &nbsp;·&nbsp; <em>Nhấn đáp án khác để thay đổi</em></div>` : ""}
   </div>
   <div class="nav-area">
     <button class="btn-nav" onclick="go(${state.current-1})" ${state.current===0?"disabled":""}>← Trước</button>
@@ -646,7 +646,6 @@ function renderError() {
 //  Actions
 // ──────────────────────────────────────────────────
 function pick(key) {
-  if (state.answers[state.current] !== undefined) return;
   state.answers[state.current] = key;
   render();
 }
