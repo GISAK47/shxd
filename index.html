@@ -475,7 +475,7 @@ function renderExam() {
     <div class="q-number">CÂU ${state.current+1}</div>
     <div class="q-text">${q.question}</div>
     <div class="options">${opts}</div>
-    ${chosen ? `<div style="font-size:12px;color:var(--text-muted);margin-top:12px">✓ Đã chọn đáp án ${chosen.toUpperCase()} &nbsp;·&nbsp; <em>Nhấn đáp án khác để thay đổi</em></div>` : ""}
+    <div id="chosenHint" style="font-size:12px;color:var(--text-muted);margin-top:12px;min-height:20px">${chosen ? `✓ Đã chọn đáp án <strong>${chosen.toUpperCase()}</strong> &nbsp;·&nbsp; <em>Nhấn đáp án khác để thay đổi</em>` : ""}</div>
   </div>
   <div class="nav-area">
     <button class="btn-nav" onclick="go(${state.current-1})" ${state.current===0?"disabled":""}>← Trước</button>
@@ -647,7 +647,32 @@ function renderError() {
 // ──────────────────────────────────────────────────
 function pick(key) {
   state.answers[state.current] = key;
-  render();
+
+  // Cập nhật tại chỗ — không render() lại toàn trang để tránh nhảy/scroll
+  document.querySelectorAll(".opt-btn").forEach(btn => {
+    const k = btn.querySelector(".opt-key").textContent.trim().toLowerCase();
+    btn.classList.toggle("selected", k === key);
+  });
+
+  const hint = document.getElementById("chosenHint");
+  if (hint) hint.innerHTML = `✓ Đã chọn đáp án <strong>${key.toUpperCase()}</strong> &nbsp;·&nbsp; <em>Nhấn đáp án khác để thay đổi</em>`;
+
+  // Cập nhật số câu đã làm ở topbar
+  const done = Object.keys(state.answers).length;
+  const doneEls = document.querySelectorAll(".progress-text span");
+  if (doneEls[1]) doneEls[1].textContent = done;
+
+  // Đánh dấu dot hiện tại là đã trả lời
+  const dot = document.querySelector(".dot.current");
+  if (dot) dot.classList.add("answered");
+
+  // Cập nhật chip PL / CM
+  const plDone = state.questions.filter((qq,i) => state.answers[i] !== undefined && qq.section === "phap_luat").length;
+  const cmDone = state.questions.filter((qq,i) => state.answers[i] !== undefined && qq.section !== "phap_luat").length;
+  const plChip = document.querySelector(".score-chip.pl span");
+  const cmChip = document.querySelector(".score-chip.cm span");
+  if (plChip) plChip.textContent = plDone + "/" + MAX_PL;
+  if (cmChip) cmChip.textContent = cmDone + "/" + MAX_CM;
 }
 
 function go(i) {
