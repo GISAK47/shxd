@@ -382,7 +382,7 @@ function renderWelcome() {
     </div>`).join("");
 
   return `<div class="welcome">
-    <div class="welcome-badge">Kỳ Sát Hạch Chính Thức</div>
+    <div class="welcome-badge">Sát Hạch</div>
     <h1>Thiết Kế Quy Hoạch<br>Xây Dựng</h1>
     <p class="welcome-desc">Chọn hạng thi, nhập thông tin và bắt đầu sát hạch</p>
 
@@ -405,7 +405,7 @@ function renderWelcome() {
       <h3>Thông tin thí sinh</h3>
       <div class="form-row">
         <label>Họ và tên *</label>
-        <input id="inputName" type="text" placeholder="Nguyễn Văn A" autocomplete="name">
+        <input id="inputName" type="text" placeholder="Khá Bảnh" autocomplete="name">
         <div class="error-msg" id="errName"></div>
       </div>
       <div class="form-row">
@@ -581,7 +581,7 @@ function renderResult() {
         <span class="cond-result ${passConditions.total.passed?"ok":"fail"}">${passConditions.total.passed?"ĐẠT":"CHƯA ĐẠT"}</span>
       </div>
     </div>
-    <p style="font-size:12px;color:var(--text-muted);margin-bottom:18px">✅ Kết quả đã được ghi vào hệ thống</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:18px">✅ haha kết quả đã được gửi cho phụ huynh của bạn</p>
     <button class="btn-retry" onclick="retry()">Làm lại</button>
   </div>
 
