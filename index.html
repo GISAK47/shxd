@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sát Hạch – Thiết Kế Quy Hoạch Xây Dựng Hạng III</title>
+<title>Sát Hạch – Thiết Kế Quy Hoạch Xây Dựng</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#0d1117;--surface:#161b22;--surface2:#1c2230;--border:#2a3244;
   --gold:#c9a84c;--gold-light:#e8c96a;--text:#e6eaf0;--text-muted:#8b95a7;
-  --green:#3fb950;--red:#f85149;--blue:#58a6ff;--radius:10px;
+  --green:#3fb950;--red:#f85149;--blue:#58a6ff;--purple:#a371f7;--radius:10px;
 }
 body{background:var(--bg);color:var(--text);font-family:'Be Vietnam Pro',sans-serif;font-size:15px;min-height:100vh;
   background-image:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(201,168,76,.08),transparent),
@@ -25,48 +25,75 @@ body{background:var(--bg);color:var(--text);font-family:'Be Vietnam Pro',sans-se
   border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;}
 .header-title{font-family:'Playfair Display',serif;font-size:16px;line-height:1.2}
 .header-sub{font-size:11px;color:var(--text-muted);margin-top:2px}
+.header-hang-badge{margin-left:auto;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;
+  background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);color:var(--gold);display:none}
 .container{max-width:780px;margin:0 auto;padding:24px 20px 60px}
 
+/* Loading */
 .loading{text-align:center;padding:80px 20px;}
 .spinner{width:44px;height:44px;border:3px solid var(--border);border-top-color:var(--gold);
   border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 20px;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading p{color:var(--text-muted);font-size:14px}
 
-.welcome{text-align:center;padding:50px 20px 40px}
+/* Welcome */
+.welcome{text-align:center;padding:40px 20px 40px}
 .welcome-badge{display:inline-block;background:linear-gradient(135deg,rgba(201,168,76,.15),rgba(201,168,76,.05));
   border:1px solid rgba(201,168,76,.3);border-radius:100px;padding:6px 18px;font-size:12px;
   color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:20px;}
-.welcome h1{font-family:'Playfair Display',serif;font-size:clamp(22px,5vw,34px);line-height:1.2;margin-bottom:8px;
+.welcome h1{font-family:'Playfair Display',serif;font-size:clamp(22px,5vw,32px);line-height:1.2;margin-bottom:8px;
   background:linear-gradient(135deg,var(--text),var(--gold-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.welcome-desc{color:var(--text-muted);font-size:14px;max-width:480px;margin:0 auto 30px}
-.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:28px;text-align:left;}
-.info-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;}
-.info-card-label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
-.info-card-value{font-size:20px;font-weight:700;color:var(--gold)}
-.info-card-sub{font-size:12px;color:var(--text-muted);margin-top:2px}
+.welcome-desc{color:var(--text-muted);font-size:14px;max-width:480px;margin:0 auto 28px}
+
+/* Hang selector */
+.hang-selector{margin-bottom:24px}
+.hang-selector-label{font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;
+  letter-spacing:.8px;margin-bottom:12px;text-align:left}
+.hang-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.hang-card{background:var(--surface);border:2px solid var(--border);border-radius:12px;
+  padding:18px 12px;cursor:pointer;text-align:center;transition:all .2s;position:relative;overflow:hidden;}
+.hang-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .2s;
+  background:linear-gradient(135deg,rgba(201,168,76,.08),transparent)}
+.hang-card:hover{border-color:rgba(201,168,76,.4);transform:translateY(-2px)}
+.hang-card:hover::before{opacity:1}
+.hang-card.selected{border-color:var(--gold);background:rgba(201,168,76,.06)}
+.hang-card.selected::before{opacity:1}
+.hang-card-roman{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--gold);margin-bottom:4px}
+.hang-card-label{font-size:11px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.hang-card-sub{font-size:10px;color:var(--text-muted);margin-top:4px}
+.hang-card.selected .hang-card-label{color:var(--text)}
+.hang-checkmark{position:absolute;top:8px;right:8px;width:18px;height:18px;border-radius:50%;
+  background:var(--gold);display:none;align-items:center;justify-content:center;font-size:10px;color:#0d1117;font-weight:700}
+.hang-card.selected .hang-checkmark{display:flex}
+
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:22px;text-align:left;}
+.info-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;}
+.info-card-label{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px}
+.info-card-value{font-size:18px;font-weight:700;color:var(--gold)}
+.info-card-sub{font-size:11px;color:var(--text-muted);margin-top:2px}
 .pass-box{background:linear-gradient(135deg,rgba(63,185,80,.08),rgba(63,185,80,.03));
-  border:1px solid rgba(63,185,80,.2);border-radius:var(--radius);padding:14px 18px;margin-bottom:24px;text-align:left;font-size:13px;}
+  border:1px solid rgba(63,185,80,.2);border-radius:var(--radius);padding:12px 16px;margin-bottom:22px;text-align:left;font-size:13px;line-height:1.6}
 .pass-box strong{color:var(--green)}
 
-.form-section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px;text-align:left;}
-.form-section h3{font-size:14px;font-weight:700;margin-bottom:16px;color:var(--text)}
-.form-row{margin-bottom:14px;}
-.form-row label{display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.6px}
+/* Form */
+.form-section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:18px;text-align:left;}
+.form-section h3{font-size:13px;font-weight:700;margin-bottom:14px;color:var(--text)}
+.form-row{margin-bottom:12px;}
+.form-row label{display:block;font-size:11px;color:var(--text-muted);margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.6px}
 .form-row input{width:100%;background:var(--surface2);border:1px solid var(--border);
-  color:var(--text);border-radius:8px;padding:11px 14px;font-size:14px;
+  color:var(--text);border-radius:8px;padding:10px 13px;font-size:14px;
   font-family:'Be Vietnam Pro',sans-serif;outline:none;transition:border-color .15s;}
 .form-row input:focus{border-color:var(--gold)}
 .form-row input::placeholder{color:var(--text-muted)}
-.error-msg{font-size:12px;color:var(--red);margin-top:6px;display:none}
+.error-msg{font-size:12px;color:var(--red);margin-top:5px;display:none}
 
 .btn-start{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:#0d1117;font-weight:700;
   font-size:15px;border:none;border-radius:var(--radius);padding:14px 48px;cursor:pointer;
   font-family:'Be Vietnam Pro',sans-serif;letter-spacing:.3px;transition:opacity .2s,transform .15s;
   box-shadow:0 4px 24px rgba(201,168,76,.3);width:100%;}
 .btn-start:hover{opacity:.9;transform:translateY(-1px)}
-.btn-start:disabled{opacity:.5;cursor:not-allowed;transform:none}
 
+/* Exam */
 .exam-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
 .progress-text{font-size:13px;color:var(--text-muted)}
 .progress-text span{color:var(--text);font-weight:600}
@@ -74,42 +101,43 @@ body{background:var(--bg);color:var(--text);font-family:'Be Vietnam Pro',sans-se
   border-radius:8px;padding:8px 14px;font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:1px;}
 .timer-display.warning{border-color:rgba(227,165,32,.4);color:#e3a520}
 .timer-display.danger{border-color:rgba(248,81,73,.4);color:var(--red)}
-.score-chip{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-size:12px;}
-.score-chip span{font-weight:700;margin-left:4px}
-.score-chip.pl span{color:var(--blue)}.score-chip.cm span{color:var(--gold)}
+.score-chips{display:flex;gap:6px;flex-wrap:wrap}
+.score-chip{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:11px;font-weight:600;}
+.score-chip span{font-weight:700;margin-left:3px}
+.score-chip.plc span{color:var(--blue)}.score-chip.plr span{color:var(--purple)}.score-chip.cm span{color:var(--gold)}
 .progress-bar-bg{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:22px}
 .progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:2px;transition:width .4s ease}
-.section-tag{display:inline-block;font-size:11px;letter-spacing:.8px;text-transform:uppercase;
-  padding:3px 10px;border-radius:4px;margin-bottom:12px;font-weight:600;}
-.section-tag.pl{background:rgba(88,166,255,.12);color:var(--blue);border:1px solid rgba(88,166,255,.2)}
+.section-tag{display:inline-block;font-size:10px;letter-spacing:.8px;text-transform:uppercase;
+  padding:3px 9px;border-radius:4px;margin-bottom:10px;font-weight:700;}
+.section-tag.plc{background:rgba(88,166,255,.12);color:var(--blue);border:1px solid rgba(88,166,255,.2)}
+.section-tag.plr{background:rgba(163,113,247,.12);color:var(--purple);border:1px solid rgba(163,113,247,.2)}
 .section-tag.cm{background:rgba(201,168,76,.12);color:var(--gold);border:1px solid rgba(201,168,76,.2)}
-.q-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;
-  margin-bottom:16px;animation:fadeSlide .3s ease;}
-@keyframes fadeSlide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.q-number{font-size:11px;color:var(--text-muted);margin-bottom:10px;font-weight:600;letter-spacing:.5px}
-.q-text{font-size:15px;line-height:1.65;color:var(--text);margin-bottom:20px;font-weight:500}
+.q-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px;
+  margin-bottom:16px;animation:fadeSlide .25s ease;}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.q-number{font-size:11px;color:var(--text-muted);margin-bottom:8px;font-weight:600;letter-spacing:.5px}
+.q-text{font-size:15px;line-height:1.65;color:var(--text);margin-bottom:18px;font-weight:500}
 .options{display:flex;flex-direction:column;gap:8px}
 .opt-btn{display:flex;align-items:flex-start;gap:12px;background:var(--surface2);border:1px solid var(--border);
-  border-radius:8px;padding:12px 14px;cursor:pointer;text-align:left;
+  border-radius:8px;padding:11px 13px;cursor:pointer;text-align:left;
   transition:border-color .15s,background .15s;color:var(--text);font-size:14px;
   line-height:1.5;font-family:'Be Vietnam Pro',sans-serif;width:100%;}
-.opt-btn:hover:not(:disabled){border-color:rgba(201,168,76,.5);background:rgba(201,168,76,.06)}
+.opt-btn:hover{border-color:rgba(201,168,76,.5);background:rgba(201,168,76,.06)}
 .opt-key{width:22px;height:22px;flex-shrink:0;background:var(--border);border-radius:4px;
   display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;
   margin-top:1px;transition:background .15s,color .15s;color:var(--text-muted);}
 .opt-btn.selected{border-color:rgba(201,168,76,.6);background:rgba(201,168,76,.1)}
 .opt-btn.selected .opt-key{background:var(--gold);color:#0d1117}
-.opt-btn:disabled{cursor:default;opacity:.85}
 .nav-area{display:flex;align-items:center;justify-content:space-between;margin-top:8px;}
 .btn-nav{background:var(--surface);border:1px solid var(--border);color:var(--text);
   font-family:'Be Vietnam Pro',sans-serif;font-size:13px;font-weight:600;
-  border-radius:8px;padding:10px 20px;cursor:pointer;transition:border-color .15s,background .15s;}
+  border-radius:8px;padding:10px 18px;cursor:pointer;transition:border-color .15s,background .15s;}
 .btn-nav:hover{border-color:var(--gold);background:rgba(201,168,76,.05)}
 .btn-nav.primary{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:#0d1117;border-color:transparent;
   box-shadow:0 2px 12px rgba(201,168,76,.25);}
 .btn-nav.primary:hover{opacity:.9}
 .btn-nav:disabled{opacity:.35;cursor:not-allowed}
-.dot-nav{display:flex;flex-wrap:wrap;gap:5px;padding:16px 0;justify-content:center;}
+.dot-nav{display:flex;flex-wrap:wrap;gap:5px;padding:14px 0;justify-content:center;}
 .dot{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);font-size:9px;font-weight:700;
   display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;color:var(--text-muted);}
 .dot:hover{border-color:var(--gold);color:var(--gold)}
@@ -119,57 +147,57 @@ body{background:var(--bg);color:var(--text);font-family:'Be Vietnam Pro',sans-se
 .submitting{text-align:center;padding:80px 20px}
 .submitting p{color:var(--text-muted);font-size:14px;margin-top:16px}
 
-.result{text-align:center;padding:36px 10px}
-.result-badge{width:96px;height:96px;margin:0 auto 20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:42px;border:3px solid;}
+/* Result */
+.result{text-align:center;padding:32px 10px 24px}
+.result-badge{width:90px;height:90px;margin:0 auto 18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;border:3px solid;}
 .result-badge.pass{border-color:var(--green);background:rgba(63,185,80,.1);box-shadow:0 0 40px rgba(63,185,80,.15)}
 .result-badge.fail{border-color:var(--red);background:rgba(248,81,73,.08);box-shadow:0 0 40px rgba(248,81,73,.12)}
-.result h2{font-family:'Playfair Display',serif;font-size:26px;margin-bottom:6px}
+.result h2{font-family:'Playfair Display',serif;font-size:24px;margin-bottom:6px}
 .result h2.pass{color:var(--green)}.result h2.fail{color:var(--red)}
-.result-verdict{font-size:13px;color:var(--text-muted);margin-bottom:26px}
-.score-breakdown{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
-.sc-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 12px}
-.sc-box .sc-val{font-size:28px;font-weight:700;font-family:'Playfair Display',serif}
-.sc-box .sc-label{font-size:11px;color:var(--text-muted);margin-top:4px;line-height:1.4}
+.result-verdict{font-size:13px;color:var(--text-muted);margin-bottom:22px}
+.score-breakdown{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.sc-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 10px}
+.sc-box .sc-val{font-size:26px;font-weight:700;font-family:'Playfair Display',serif}
+.sc-box .sc-label{font-size:11px;color:var(--text-muted);margin-top:3px;line-height:1.4}
 .sc-box.total .sc-val{color:var(--gold)}.sc-box.pl .sc-val{color:var(--blue)}.sc-box.cm .sc-val{color:var(--gold-light)}
-.conditions{display:flex;flex-direction:column;gap:8px;margin-bottom:26px;text-align:left}
-.cond-row{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-size:13px}
-.cond-icon{font-size:18px;width:26px;text-align:center}.cond-text{flex:1}
-.cond-result{font-weight:700;font-size:13px}
+.conditions{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;text-align:left}
+.cond-row{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:11px 14px;font-size:13px}
+.cond-icon{font-size:16px;width:22px;text-align:center}.cond-text{flex:1}
+.cond-result{font-weight:700;font-size:12px}
 .cond-result.ok{color:var(--green)}.cond-result.fail{color:var(--red)}
 .btn-retry{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;
-  padding:12px 28px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Be Vietnam Pro',sans-serif;
-  margin-right:10px;transition:border-color .15s;}
+  padding:11px 26px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Be Vietnam Pro',sans-serif;
+  transition:border-color .15s;}
 .btn-retry:hover{border-color:var(--gold)}
 
-/* Review section */
-.review-section{margin-top:32px;text-align:left}
-.review-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
-.review-header h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--text)}
-.review-filters{display:flex;gap:6px}
+/* Review */
+.review-section{margin-top:28px;text-align:left}
+.review-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+.review-header h3{font-family:'Playfair Display',serif;font-size:17px;color:var(--text)}
+.review-filters{display:flex;gap:5px;flex-wrap:wrap}
 .filter-btn{background:var(--surface);border:1px solid var(--border);color:var(--text-muted);
-  border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;
+  border-radius:6px;padding:5px 11px;font-size:11px;font-weight:600;cursor:pointer;
   font-family:'Be Vietnam Pro',sans-serif;transition:all .15s;}
 .filter-btn:hover,.filter-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.08)}
 .filter-btn.active-wrong{border-color:var(--red);color:var(--red);background:rgba(248,81,73,.07)}
-.review-list{display:flex;flex-direction:column;gap:12px}
-.review-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;
-  border-left:3px solid var(--border);transition:border-color .2s;}
+.review-list{display:flex;flex-direction:column;gap:10px}
+.review-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;border-left:3px solid var(--border);}
 .review-card.correct{border-left-color:var(--green)}
 .review-card.wrong{border-left-color:var(--red)}
 .review-card.skipped{border-left-color:var(--text-muted)}
-.review-meta{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
-.review-num{font-size:11px;color:var(--text-muted);font-weight:600;letter-spacing:.5px}
-.review-status{font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.5px}
+.review-meta{display:flex;align-items:center;gap:7px;margin-bottom:9px;flex-wrap:wrap}
+.review-num{font-size:10px;color:var(--text-muted);font-weight:600;letter-spacing:.5px}
+.review-status{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.5px}
 .review-status.correct{background:rgba(63,185,80,.15);color:var(--green)}
 .review-status.wrong{background:rgba(248,81,73,.12);color:var(--red)}
 .review-status.skipped{background:rgba(139,149,167,.12);color:var(--text-muted)}
-.review-tag{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:600;letter-spacing:.5px}
-.review-tag.pl{background:rgba(88,166,255,.12);color:var(--blue);border:1px solid rgba(88,166,255,.2)}
+.review-tag{font-size:9px;padding:2px 7px;border-radius:4px;font-weight:700;letter-spacing:.5px}
+.review-tag.plc{background:rgba(88,166,255,.12);color:var(--blue);border:1px solid rgba(88,166,255,.2)}
+.review-tag.plr{background:rgba(163,113,247,.12);color:var(--purple);border:1px solid rgba(163,113,247,.2)}
 .review-tag.cm{background:rgba(201,168,76,.12);color:var(--gold);border:1px solid rgba(201,168,76,.2)}
-.review-q{font-size:14px;line-height:1.6;color:var(--text);margin-bottom:14px;font-weight:500}
-.review-opts{display:flex;flex-direction:column;gap:6px}
-.review-opt{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;border-radius:7px;
-  font-size:13px;line-height:1.5;border:1px solid transparent;}
+.review-q{font-size:14px;line-height:1.6;color:var(--text);margin-bottom:12px;font-weight:500}
+.review-opts{display:flex;flex-direction:column;gap:5px}
+.review-opt{display:flex;align-items:flex-start;gap:9px;padding:8px 11px;border-radius:6px;font-size:13px;line-height:1.5;border:1px solid transparent;}
 .review-opt.neutral{background:var(--surface2);color:var(--text-muted)}
 .review-opt.correct-ans{background:rgba(63,185,80,.1);border-color:rgba(63,185,80,.3);color:var(--green)}
 .review-opt.wrong-ans{background:rgba(248,81,73,.08);border-color:rgba(248,81,73,.25);color:var(--red)}
@@ -177,21 +205,22 @@ body{background:var(--bg);color:var(--text);font-family:'Be Vietnam Pro',sans-se
   justify-content:center;font-size:10px;font-weight:700;background:var(--border);color:var(--text-muted);}
 .review-opt.correct-ans .review-opt-key{background:var(--green);color:#0d1117}
 .review-opt.wrong-ans .review-opt-key{background:var(--red);color:#fff}
-.review-explain{margin-top:10px;font-size:12px;color:var(--text-muted);padding:8px 10px;
-  background:var(--surface2);border-radius:6px;display:flex;gap:6px}
-.empty-filter{text-align:center;padding:32px;color:var(--text-muted);font-size:13px}
+.review-explain{margin-top:8px;font-size:12px;color:var(--text-muted);padding:7px 10px;background:var(--surface2);border-radius:6px;display:flex;gap:6px}
+.empty-filter{text-align:center;padding:28px;color:var(--text-muted);font-size:13px}
 
 .error-screen{text-align:center;padding:60px 20px}
 .error-screen .err-icon{font-size:48px;margin-bottom:16px}
 .error-screen h3{font-size:18px;margin-bottom:8px;color:var(--red)}
 .error-screen p{font-size:13px;color:var(--text-muted);margin-bottom:20px;max-width:400px;margin-left:auto;margin-right:auto}
-.config-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;
-  text-align:left;font-size:12px;margin-bottom:20px}
-.config-box code{color:var(--gold);font-family:monospace;font-size:12px}
+.config-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:left;font-size:12px;margin-bottom:20px}
+.config-box code{color:var(--gold);font-family:monospace}
 
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-@media(max-width:520px){.score-breakdown{grid-template-columns:1fr 1fr}.sc-box.total{grid-column:span 2}}
+@media(max-width:520px){
+  .score-breakdown{grid-template-columns:1fr 1fr}.sc-box.total{grid-column:span 2}
+  .hang-cards{grid-template-columns:repeat(3,1fr)}
+}
 </style>
 </head>
 <body>
@@ -200,23 +229,34 @@ body{background:var(--bg);color:var(--text);font-family:'Be Vietnam Pro',sans-se
   <div class="header-icon">🏛</div>
   <div>
     <div class="header-title">Sát Hạch Chứng Chỉ Hành Nghề</div>
-    <div class="header-sub">Thiết Kế Quy Hoạch Xây Dựng – Hạng III by NNK</div>
+    <div class="header-sub">Thiết Kế Quy Hoạch Xây Dựng</div>
   </div>
+  <div class="header-hang-badge" id="headerHangBadge"></div>
 </header>
 <div class="container" id="app"></div>
 
 <script>
-// ✅ ĐÃ CẬP NHẬT URL ĐÚNG (exec URL, không phải echo URL)
+// ⚠️ THAY BẰNG URL WEB APP CỦA BẠN
 const API_URL = "https://script.google.com/macros/s/AKfycbz4-wU1_m0xWmTVf4Co4AC3SYaLQ3ZISmqcXrEJwgBrDJsjtMkr1N-eJxUMJH6TiVtS/exec";
 
-const TOTAL_TIME = 30 * 60;
-const PASS_PL    = 7;
-const PASS_TOTAL = 21;
-const MAX_PL     = 10;
-const MAX_CM     = 20;
+const TOTAL_TIME      = 30 * 60;
+const PL_CHUNG_COUNT  = 5;
+const PL_RIENG_COUNT  = 5;
+const CM_COUNT        = 20;
+const MAX_PL          = PL_CHUNG_COUNT + PL_RIENG_COUNT;
+const MAX_CM          = CM_COUNT;
+const PASS_PL         = 7;
+const PASS_TOTAL      = 21;
+
+const HANG_INFO = {
+  hang_1: { roman: "I",   label: "Hạng I",   sub: "Năng lực cao nhất" },
+  hang_2: { roman: "II",  label: "Hạng II",  sub: "Năng lực trung cấp" },
+  hang_3: { roman: "III", label: "Hạng III", sub: "Năng lực cơ bản" },
+};
 
 let state = {
   screen:    "welcome",
+  hang:      "hang_3",
   questions: [],
   answers:   {},
   current:   0,
@@ -225,18 +265,11 @@ let state = {
   result:    null,
   userName:  "",
   userEmail: "",
-  startTime: null
 };
 
-// ──────────────────────────────────────────────────
-//  API calls
-//  FIX CORS: Dùng Content-Type: text/plain để tránh preflight OPTIONS
-//  Apps Script không hỗ trợ CORS preflight với application/json
-// ──────────────────────────────────────────────────
-async function fetchQuestions() {
-  const res = await fetch(API_URL + "?action=getQuestions", {
-    redirect: "follow"
-  });
+// ── API ───────────────────────────────────────────────────────
+async function fetchQuestions(hang) {
+  const res = await fetch(`${API_URL}?action=getQuestions&hang=${hang}`, { redirect: "follow" });
   if (!res.ok) throw new Error("HTTP " + res.status);
   const data = await res.json();
   if (!data.questions) throw new Error("Không có câu hỏi");
@@ -244,25 +277,18 @@ async function fetchQuestions() {
 }
 
 async function submitToAPI(payload) {
-  // ✅ FIX: Dùng text/plain thay vì application/json
-  //    Tránh CORS preflight request mà Apps Script không xử lý được
   const res = await fetch(API_URL, {
-    method:   "POST",
-    redirect: "follow",
-    headers:  { "Content-Type": "text/plain;charset=utf-8" },
-    body:     JSON.stringify(payload)
+    method: "POST", redirect: "follow",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
   });
   if (!res.ok) throw new Error("HTTP " + res.status);
-  const text = await res.text();
-  return JSON.parse(text);
+  return JSON.parse(await res.text());
 }
 
-// ──────────────────────────────────────────────────
-//  Timer
-// ──────────────────────────────────────────────────
+// ── Timer ─────────────────────────────────────────────────────
 function startTimer() {
   stopTimer();
-  state.startTime = Date.now();
   updateTimerBar();
   state.timerInt = setInterval(() => {
     state.timeLeft--;
@@ -271,12 +297,7 @@ function startTimer() {
     if (state.timeLeft <= 0) { stopTimer(); doSubmit(true); }
   }, 1000);
 }
-
-function stopTimer() {
-  if (state.timerInt) clearInterval(state.timerInt);
-  state.timerInt = null;
-}
-
+function stopTimer() { if (state.timerInt) clearInterval(state.timerInt); state.timerInt = null; }
 function updateTimerBar() {
   const fill = document.getElementById("timerFill");
   if (!fill) return;
@@ -284,7 +305,6 @@ function updateTimerBar() {
   fill.style.width = pct + "%";
   fill.className = "timer-fill" + (pct < 20 ? " danger" : pct < 40 ? " warning" : "");
 }
-
 function updateTimerDisplay() {
   const el = document.getElementById("timerDisplay");
   if (!el) return;
@@ -292,120 +312,95 @@ function updateTimerDisplay() {
   el.textContent = "⏱ " + fmt(state.timeLeft);
   el.className = "timer-display" + (pct < 0.2 ? " danger" : pct < 0.4 ? " warning" : "");
 }
+function fmt(s) { return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0"); }
+function timeUsed() { return TOTAL_TIME - state.timeLeft; }
 
-function fmt(s) {
-  return String(Math.floor(s/60)).padStart(2,"0") + ":" + String(s%60).padStart(2,"0");
-}
-
-function timeUsed() {
-  return TOTAL_TIME - state.timeLeft;
-}
-
-// ──────────────────────────────────────────────────
-//  Flow
-// ──────────────────────────────────────────────────
+// ── Flow ──────────────────────────────────────────────────────
 async function startExam() {
-  const nameEl  = document.getElementById("inputName");
-  const emailEl = document.getElementById("inputEmail");
-  const name    = nameEl ? nameEl.value.trim() : "";
-  const email   = emailEl ? emailEl.value.trim() : "";
-
+  const nameEl = document.getElementById("inputName");
+  const name   = nameEl ? nameEl.value.trim() : "";
   if (!name) {
     const err = document.getElementById("errName");
-    if (err) { err.style.display = "block"; err.textContent = "Vui lòng nhập họ tên."; }
+    if (err) { err.style.display="block"; err.textContent="Vui lòng nhập họ tên."; }
     return;
   }
-
   state.userName  = name;
-  state.userEmail = email;
-
-  state.screen = "loading";
+  state.userEmail = (document.getElementById("inputEmail")||{}).value||"";
+  state.screen    = "loading";
   render();
-
   try {
-    const questions = await fetchQuestions();
-    state.questions = questions;
-    state.answers   = {};
-    state.current   = 0;
-    state.timeLeft  = TOTAL_TIME;
-    state.result    = null;
-    state.screen    = "exam";
+    const qs = await fetchQuestions(state.hang);
+    Object.assign(state, { questions:qs, answers:{}, current:0, timeLeft:TOTAL_TIME, result:null, screen:"exam" });
     render();
     startTimer();
-  } catch (e) {
-    state.screen   = "error";
-    state.errorMsg = e.message;
-    render();
-  }
+  } catch(e) { state.screen="error"; state.errorMsg=e.message; render(); }
 }
 
-async function doSubmit(auto = false) {
+async function doSubmit(auto=false) {
   if (!auto) {
-    const unanswered = state.questions.length - Object.keys(state.answers).length;
-    if (unanswered > 0) {
-      if (!confirm(`Còn ${unanswered} câu chưa trả lời. Bạn có chắc muốn nộp bài?`)) return;
-    }
+    const left = state.questions.length - Object.keys(state.answers).length;
+    if (left>0 && !confirm(`Còn ${left} câu chưa trả lời. Bạn có chắc muốn nộp bài?`)) return;
   }
   stopTimer();
-
-  const answers = state.questions.map((q, i) => ({
-    id:     q.id,
-    chosen: state.answers[i] || null
-  }));
-
-  state.screen = "submitting";
-  render();
-
+  const answers = state.questions.map((q,i) => ({ id:q.id, chosen:state.answers[i]||null }));
+  state.screen = "submitting"; render();
   try {
-    const result = await submitToAPI({
-      action:   "submit",
-      name:     state.userName,
-      email:    state.userEmail,
-      answers,
-      timeUsed: timeUsed()
-    });
-    state.result = result;
-    state.screen = "result";
-    render();
-  } catch (e) {
-    state.screen = "result";
-    state.result = { _offline: true, error: e.message };
-    render();
+    state.result = await submitToAPI({ action:"submit", name:state.userName, email:state.userEmail, answers, timeUsed:timeUsed(), hang:state.hang });
+    state.screen = "result"; render();
+  } catch(e) {
+    state.result = { _offline:true, error:e.message }; state.screen="result"; render();
   }
 }
 
-function retry() {
-  stopTimer();
-  state.screen = "welcome";
-  render();
+function retry() { stopTimer(); state.screen="welcome"; render(); }
+function selectHang(h) {
+  state.hang = h;
+  document.querySelectorAll(".hang-card").forEach(el => el.classList.toggle("selected", el.dataset.hang===h));
 }
 
-// ──────────────────────────────────────────────────
-//  Render
-// ──────────────────────────────────────────────────
+// ── Render ────────────────────────────────────────────────────
 function render() {
   const app = document.getElementById("app");
-  if      (state.screen === "welcome")    app.innerHTML = renderWelcome();
-  else if (state.screen === "loading")    app.innerHTML = renderLoading();
-  else if (state.screen === "exam")       app.innerHTML = renderExam();
-  else if (state.screen === "submitting") app.innerHTML = renderSubmitting();
-  else if (state.screen === "result")     app.innerHTML = renderResult();
-  else if (state.screen === "error")      app.innerHTML = renderError();
+  const badge = document.getElementById("headerHangBadge");
+  if (state.screen==="exam"||state.screen==="result"||state.screen==="submitting") {
+    badge.textContent = HANG_INFO[state.hang]?.label || "";
+    badge.style.display="block";
+  } else { badge.style.display="none"; }
+
+  const screens = { welcome:renderWelcome, loading:renderLoading, exam:renderExam,
+                    submitting:renderSubmitting, result:renderResult, error:renderError };
+  app.innerHTML = (screens[state.screen]||renderError)();
 }
 
 function renderWelcome() {
-  return `
-  <div class="welcome">
+  const hangCards = Object.entries(HANG_INFO).map(([key,info]) => `
+    <div class="hang-card ${state.hang===key?"selected":""}" data-hang="${key}" onclick="selectHang('${key}')">
+      <div class="hang-checkmark">✓</div>
+      <div class="hang-card-roman">${info.roman}</div>
+      <div class="hang-card-label">Hạng ${info.roman}</div>
+      <div class="hang-card-sub">${info.sub}</div>
+    </div>`).join("");
+
+  return `<div class="welcome">
     <div class="welcome-badge">Kỳ Sát Hạch Chính Thức</div>
-    <h1>Thiết Kế Quy Hoạch<br>Xây Dựng Hạng III</h1>
-    <p class="welcome-desc">Bộ câu hỏi sát hạch kiến thức pháp luật và chuyên môn nghề nghiệp</p>
+    <h1>Thiết Kế Quy Hoạch<br>Xây Dựng</h1>
+    <p class="welcome-desc">Chọn hạng thi, nhập thông tin và bắt đầu sát hạch</p>
+
+    <div class="hang-selector">
+      <div class="hang-selector-label">Chọn hạng thi</div>
+      <div class="hang-cards">${hangCards}</div>
+    </div>
+
     <div class="info-grid">
       <div class="info-card"><div class="info-card-label">Thời gian</div><div class="info-card-value">30</div><div class="info-card-sub">Phút</div></div>
       <div class="info-card"><div class="info-card-label">Số câu</div><div class="info-card-value">30</div><div class="info-card-sub">Câu ngẫu nhiên</div></div>
-      <div class="info-card"><div class="info-card-label">Pháp luật</div><div class="info-card-value">10</div><div class="info-card-sub">Điểm tối đa</div></div>
-      <div class="info-card"><div class="info-card-label">Chuyên môn</div><div class="info-card-value">20</div><div class="info-card-sub">Điểm tối đa</div></div>
+      <div class="info-card"><div class="info-card-label">Pháp luật chung</div><div class="info-card-value">5</div><div class="info-card-sub">câu</div></div>
+      <div class="info-card"><div class="info-card-label">Pháp luật riêng</div><div class="info-card-value">5</div><div class="info-card-sub">câu</div></div>
+      <div class="info-card"><div class="info-card-label">Chuyên môn</div><div class="info-card-value">20</div><div class="info-card-sub">câu</div></div>
     </div>
-    <div class="pass-box"><strong>Điều kiện đạt:</strong> Pháp luật <strong>≥ 7/10</strong> &nbsp;và&nbsp; Tổng <strong>≥ 21/30</strong></div>
+    <div class="pass-box">
+      <strong>Điều kiện đạt:</strong> Pháp luật <strong>≥ 7/10</strong> &nbsp;và&nbsp; Tổng <strong>≥ 21/30</strong>
+    </div>
     <div class="form-section">
       <h3>Thông tin thí sinh</h3>
       <div class="form-row">
@@ -423,9 +418,8 @@ function renderWelcome() {
 }
 
 function renderLoading() {
-  return `<div class="loading"><div class="spinner"></div><p>Đang tải đề thi từ ngân hàng câu hỏi...</p></div>`;
+  return `<div class="loading"><div class="spinner"></div><p>Đang tải đề thi ${HANG_INFO[state.hang]?.label||""} từ ngân hàng câu hỏi...</p></div>`;
 }
-
 function renderSubmitting() {
   return `<div class="submitting"><div class="spinner"></div><p>Đang chấm điểm và ghi kết quả...</p></div>`;
 }
@@ -435,52 +429,54 @@ function renderExam() {
   const chosen = state.answers[state.current];
   const total  = state.questions.length;
   const done   = Object.keys(state.answers).length;
-  const pct    = ((state.current + 1) / total * 100).toFixed(1);
+  const pct    = ((state.current+1)/total*100).toFixed(1);
 
-  const plDone = state.questions.filter((qq,i) => state.answers[i] !== undefined && qq.section === "phap_luat").length;
-  const cmDone = state.questions.filter((qq,i) => state.answers[i] !== undefined && qq.section !== "phap_luat").length;
+  const plcDone = state.questions.filter((qq,i)=>state.answers[i]!==undefined&&qq.section==="phap_luat_chung").length;
+  const plrDone = state.questions.filter((qq,i)=>state.answers[i]!==undefined&&qq.section==="phap_luat_rieng").length;
+  const cmDone  = state.questions.filter((qq,i)=>state.answers[i]!==undefined&&qq.section==="chuyen_mon").length;
 
-  const dots = state.questions.map((qq, i) => {
-    let cls = "dot" + (i === state.current ? " current" : state.answers[i] !== undefined ? " answered" : "");
-    return `<div class="${cls}" onclick="go(${i})">${i+1}</div>`;
-  }).join("");
+  const sectionCls  = q.section==="phap_luat_chung"?"plc":q.section==="phap_luat_rieng"?"plr":"cm";
+  const sectionName = q.section==="phap_luat_chung"?"Pháp luật chung":q.section==="phap_luat_rieng"?"Pháp luật riêng":"Chuyên môn";
 
-  const opts = ["a","b","c","d"].filter(k => q.opts[k]).map(k => {
-    const sel = chosen === k ? " selected" : "";
+  const opts = ["a","b","c","d"].filter(k=>q.opts[k]).map(k => {
+    const sel = chosen===k?" selected":"";
     return `<button class="opt-btn${sel}" onclick="pick('${k}')">
       <span class="opt-key">${k.toUpperCase()}</span>
-      <span class="opt-text">${q.opts[k]}</span>
+      <span>${q.opts[k]}</span>
     </button>`;
   }).join("");
 
-  const isPhapLuat = q.section === "phap_luat";
-  const tag = isPhapLuat
-    ? `<span class="section-tag pl">Pháp luật</span>`
-    : `<span class="section-tag cm">Chuyên môn</span>`;
-
-  const isLast = state.current === total - 1;
+  const dots = state.questions.map((_,i) => {
+    const cls = "dot"+(i===state.current?" current":state.answers[i]!==undefined?" answered":"");
+    return `<div class="${cls}" onclick="go(${i})">${i+1}</div>`;
+  }).join("");
 
   return `
   <div class="exam-topbar">
-    <div class="progress-text">Câu <span>${state.current+1}</span>/<span>${total}</span> &nbsp;·&nbsp; Đã làm: <span>${done}</span></div>
-    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-      <div class="score-chip pl">PL <span>${plDone}/${MAX_PL}</span></div>
-      <div class="score-chip cm">CM <span>${cmDone}/${MAX_CM}</span></div>
+    <div class="progress-text">Câu <span>${state.current+1}</span>/<span>${total}</span> · Đã làm: <span>${done}</span></div>
+    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+      <div class="score-chips">
+        <div class="score-chip plc">PL Chung<span id="chip-plc">${plcDone}/${PL_CHUNG_COUNT}</span></div>
+        <div class="score-chip plr">PL Riêng<span id="chip-plr">${plrDone}/${PL_RIENG_COUNT}</span></div>
+        <div class="score-chip cm">CM<span id="chip-cm">${cmDone}/${MAX_CM}</span></div>
+      </div>
       <div class="timer-display" id="timerDisplay">⏱ ${fmt(state.timeLeft)}</div>
     </div>
   </div>
   <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
   <div class="q-card">
-    ${tag}
+    <span class="section-tag ${sectionCls}">${sectionName}</span>
     <div class="q-number">CÂU ${state.current+1}</div>
     <div class="q-text">${q.question}</div>
     <div class="options">${opts}</div>
-    <div id="chosenHint" style="font-size:12px;color:var(--text-muted);margin-top:12px;min-height:20px">${chosen ? `✓ Đã chọn đáp án <strong>${chosen.toUpperCase()}</strong> &nbsp;·&nbsp; <em>Nhấn đáp án khác để thay đổi</em>` : ""}</div>
+    <div id="chosenHint" style="font-size:12px;color:var(--text-muted);margin-top:10px;min-height:18px">
+      ${chosen?`✓ Đã chọn đáp án <strong>${chosen.toUpperCase()}</strong> &nbsp;·&nbsp; <em>Nhấn đáp án khác để thay đổi</em>`:""}
+    </div>
   </div>
   <div class="nav-area">
     <button class="btn-nav" onclick="go(${state.current-1})" ${state.current===0?"disabled":""}>← Trước</button>
     <button class="btn-nav" onclick="jumpNext()">Câu chưa làm ↓</button>
-    ${isLast
+    ${state.current===total-1
       ? `<button class="btn-nav primary" onclick="doSubmit()">Nộp bài →</button>`
       : `<button class="btn-nav primary" onclick="go(${state.current+1})">Tiếp →</button>`}
   </div>
@@ -488,108 +484,86 @@ function renderExam() {
 }
 
 // Review filter state
-let reviewFilter = "all"; // all | wrong | correct | skipped
-
+let reviewFilter = "all";
 function setReviewFilter(f) {
   reviewFilter = f;
-  const reviewEl = document.getElementById("reviewList");
-  const btns = document.querySelectorAll(".filter-btn");
-  btns.forEach(b => {
+  document.querySelectorAll(".filter-btn").forEach(b => {
     b.classList.remove("active","active-wrong");
-    if (b.dataset.f === f) {
-      b.classList.add(f === "wrong" ? "active-wrong" : "active");
-    }
+    if (b.dataset.f===f) b.classList.add(f==="wrong"?"active-wrong":"active");
   });
-  if (reviewEl) reviewEl.innerHTML = renderReviewList();
+  const el = document.getElementById("reviewList");
+  if (el) el.innerHTML = renderReviewList();
 }
 
 function renderReviewList() {
   const r = state.result;
-  if (!r || !r.detail) return "";
-
-  // Build a map from question id -> question data
+  if (!r||!r.detail) return "";
   const qMap = {};
-  state.questions.forEach(q => { qMap[q.id] = q; });
+  state.questions.forEach(q => { qMap[q.id]=q; });
 
-  let items = r.detail.map((d, idx) => {
-    const q = qMap[d.id] || {};
-    const status = !d.chosen ? "skipped" : d.isRight ? "correct" : "wrong";
-    return { ...d, q, status, idx };
+  let items = r.detail.map((d,idx) => {
+    const q = qMap[d.id]||{};
+    return { ...d, q, idx, status:!d.chosen?"skipped":d.isRight?"correct":"wrong" };
   });
 
-  if (reviewFilter === "wrong")   items = items.filter(x => x.status === "wrong");
-  if (reviewFilter === "correct") items = items.filter(x => x.status === "correct");
-  if (reviewFilter === "skipped") items = items.filter(x => x.status === "skipped");
-
-  if (items.length === 0) {
-    const labels = { wrong:"sai", correct:"đúng", skipped:"bỏ qua" };
-    return `<div class="empty-filter">Không có câu nào ${labels[reviewFilter] || ""} 🎉</div>`;
+  if (reviewFilter!=="all") items = items.filter(x=>x.status===reviewFilter);
+  if (!items.length) {
+    const lbl={wrong:"sai",correct:"đúng",skipped:"bỏ qua"};
+    return `<div class="empty-filter">Không có câu nào ${lbl[reviewFilter]||""} 🎉</div>`;
   }
 
-  return items.map(({ d, q, status, idx, id, chosen, correct, isRight, section }) => {
-    const opts = q.opts || {};
-    const isPhapLuat = section === "phap_luat";
-    const tagClass = isPhapLuat ? "pl" : "cm";
-    const tagLabel = isPhapLuat ? "Pháp luật" : "Chuyên môn";
+  return items.map(({q,status,idx,chosen,correct,section})=>{
+    const opts = q.opts||{};
+    const tagCls  = section==="phap_luat_chung"?"plc":section==="phap_luat_rieng"?"plr":"cm";
+    const tagName = section==="phap_luat_chung"?"PL Chung":section==="phap_luat_rieng"?"PL Riêng":"Chuyên môn";
+    const stLabel = status==="correct"?"✓ Đúng":status==="wrong"?"✗ Sai":"— Bỏ qua";
 
-    const statusLabel = status === "correct" ? "✓ Đúng" : status === "wrong" ? "✗ Sai" : "— Bỏ qua";
-
-    const optHtml = ["a","b","c","d"].filter(k => opts[k]).map(k => {
-      let cls = "neutral";
-      let marker = "";
-      if (k === correct && k === chosen) { cls = "correct-ans"; marker = " ✓"; }
-      else if (k === correct)            { cls = "correct-ans"; marker = " ← Đáp án đúng"; }
-      else if (k === chosen && !isRight) { cls = "wrong-ans";   marker = " ← Bạn chọn"; }
-      return `<div class="review-opt ${cls}">
-        <span class="review-opt-key">${k.toUpperCase()}</span>
-        <span>${opts[k]}${marker ? `<strong>${marker}</strong>` : ""}</span>
-      </div>`;
+    const optHtml = ["a","b","c","d"].filter(k=>opts[k]).map(k=>{
+      let cls="neutral",marker="";
+      if (k===correct&&k===chosen)       { cls="correct-ans"; marker=" ✓"; }
+      else if (k===correct)              { cls="correct-ans"; marker=" ← Đáp án đúng"; }
+      else if (k===chosen&&status==="wrong"){ cls="wrong-ans"; marker=" ← Bạn chọn"; }
+      return `<div class="review-opt ${cls}"><span class="review-opt-key">${k.toUpperCase()}</span><span>${opts[k]}${marker?`<strong>${marker}</strong>`:""}</span></div>`;
     }).join("");
 
-    let explainHtml = "";
-    if (status === "wrong") {
-      explainHtml = `<div class="review-explain">💡 <span>Đáp án đúng là <strong>${correct.toUpperCase()}</strong>${chosen ? `, bạn đã chọn <strong>${chosen.toUpperCase()}</strong>` : ""}.</span></div>`;
-    } else if (status === "skipped") {
-      explainHtml = `<div class="review-explain">⚠️ <span>Bạn chưa trả lời câu này. Đáp án đúng là <strong>${correct.toUpperCase()}</strong>.</span></div>`;
-    }
+    const explain = status==="wrong"
+      ? `<div class="review-explain">💡 <span>Đáp án đúng là <strong>${correct.toUpperCase()}</strong>${chosen?`, bạn đã chọn <strong>${chosen.toUpperCase()}</strong>`:""}</span></div>`
+      : status==="skipped"
+      ? `<div class="review-explain">⚠️ <span>Bạn chưa trả lời. Đáp án đúng là <strong>${correct.toUpperCase()}</strong></span></div>` : "";
 
     return `<div class="review-card ${status}">
       <div class="review-meta">
-        <span class="review-num">CÂU ${idx + 1}</span>
-        <span class="review-status ${status}">${statusLabel}</span>
-        <span class="review-tag ${tagClass}">${tagLabel}</span>
+        <span class="review-num">CÂU ${idx+1}</span>
+        <span class="review-status ${status}">${stLabel}</span>
+        <span class="review-tag ${tagCls}">${tagName}</span>
       </div>
-      <div class="review-q">${q.question || "(Không có nội dung câu hỏi)"}</div>
+      <div class="review-q">${q.question||""}</div>
       <div class="review-opts">${optHtml}</div>
-      ${explainHtml}
+      ${explain}
     </div>`;
   }).join("");
 }
 
 function renderResult() {
   const r = state.result;
-  if (!r || r._offline) {
-    return `<div class="result">
-      <div class="result-badge fail">⚠️</div>
-      <h2 class="fail">Lỗi kết nối</h2>
-      <p class="result-verdict">Không thể ghi kết quả lên server. Vui lòng kiểm tra lại API URL.</p>
-      ${r ? `<p style="font-size:12px;color:var(--text-muted)">${r.error}</p>` : ""}
-      <br><button class="btn-retry" onclick="retry()">Thử lại</button>
-    </div>`;
-  }
+  if (!r||r._offline) return `<div class="result">
+    <div class="result-badge fail">⚠️</div>
+    <h2 class="fail">Lỗi kết nối</h2>
+    <p class="result-verdict">Không thể ghi kết quả. Kiểm tra lại API URL.</p>
+    ${r?`<p style="font-size:12px;color:var(--text-muted)">${r.error}</p>`:""}
+    <br><button class="btn-retry" onclick="retry()">Thử lại</button></div>`;
 
-  const {plScore, cmScore, total, passed, passConditions, detail} = r;
+  const {plScore,cmScore,total,passed,passConditions,detail} = r;
   reviewFilter = "all";
-
-  const wrongCount   = detail ? detail.filter(d => d.chosen && !d.isRight).length : 0;
-  const correctCount = detail ? detail.filter(d => d.isRight).length : 0;
-  const skippedCount = detail ? detail.filter(d => !d.chosen).length : 0;
+  const wrongCount   = detail?detail.filter(d=>d.chosen&&!d.isRight).length:0;
+  const correctCount = detail?detail.filter(d=>d.isRight).length:0;
+  const skippedCount = detail?detail.filter(d=>!d.chosen).length:0;
 
   return `
   <div class="result">
     <div class="result-badge ${passed?"pass":"fail"}">${passed?"🎉":"📋"}</div>
     <h2 class="${passed?"pass":"fail"}">${passed?"ĐẠT YÊU CẦU":"CHƯA ĐẠT"}</h2>
-    <p class="result-verdict">Xin chào <strong>${state.userName}</strong> · Thời gian làm bài: ${fmt(timeUsed())}</p>
+    <p class="result-verdict">Xin chào <strong>${state.userName}</strong> · ${HANG_INFO[state.hang]?.label||""} · Thời gian: ${fmt(timeUsed())}</p>
     <div class="score-breakdown">
       <div class="sc-box total"><div class="sc-val">${total}/30</div><div class="sc-label">Tổng điểm</div></div>
       <div class="sc-box pl"><div class="sc-val">${plScore}/10</div><div class="sc-label">Pháp luật</div></div>
@@ -598,7 +572,7 @@ function renderResult() {
     <div class="conditions">
       <div class="cond-row">
         <span class="cond-icon">${passConditions.pl.passed?"✅":"❌"}</span>
-        <span class="cond-text">Điểm pháp luật <strong>${plScore}/10</strong> (yêu cầu ≥ 7)</span>
+        <span class="cond-text">Pháp luật <strong>${plScore}/10</strong> (yêu cầu ≥ 7)</span>
         <span class="cond-result ${passConditions.pl.passed?"ok":"fail"}">${passConditions.pl.passed?"ĐẠT":"CHƯA ĐẠT"}</span>
       </div>
       <div class="cond-row">
@@ -607,11 +581,11 @@ function renderResult() {
         <span class="cond-result ${passConditions.total.passed?"ok":"fail"}">${passConditions.total.passed?"ĐẠT":"CHƯA ĐẠT"}</span>
       </div>
     </div>
-    <p style="font-size:12px;color:var(--text-muted);margin-bottom:20px">✅ Kết quả đã được ghi vào hệ thống</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:18px">✅ Kết quả đã được ghi vào hệ thống</p>
     <button class="btn-retry" onclick="retry()">Làm lại</button>
   </div>
 
-  ${detail ? `
+  ${detail?`
   <div class="review-section">
     <div class="review-header">
       <h3>📋 Xem lại bài làm</h3>
@@ -619,75 +593,53 @@ function renderResult() {
         <button class="filter-btn active" data-f="all"     onclick="setReviewFilter('all')">Tất cả (${detail.length})</button>
         <button class="filter-btn"        data-f="correct" onclick="setReviewFilter('correct')">✓ Đúng (${correctCount})</button>
         <button class="filter-btn"        data-f="wrong"   onclick="setReviewFilter('wrong')">✗ Sai (${wrongCount})</button>
-        ${skippedCount > 0 ? `<button class="filter-btn" data-f="skipped" onclick="setReviewFilter('skipped')">— Bỏ qua (${skippedCount})</button>` : ""}
+        ${skippedCount?`<button class="filter-btn" data-f="skipped" onclick="setReviewFilter('skipped')">— Bỏ qua (${skippedCount})</button>`:""}
       </div>
     </div>
     <div class="review-list" id="reviewList">${renderReviewList()}</div>
-  </div>` : ""}`;
+  </div>`:""}`;
 }
 
 function renderError() {
-  return `
-  <div class="error-screen">
+  return `<div class="error-screen">
     <div class="err-icon">🔌</div>
     <h3>Không thể kết nối API</h3>
-    <p>Vui lòng kiểm tra Apps Script đã được deploy với quyền <strong>"Anyone"</strong></p>
-    <div class="config-box">
-      Trong Apps Script:<br><br>
-      <code>Deploy → Manage deployments → Edit</code><br><br>
-      Đặt <code>Who has access</code> thành <code>Anyone</code>
-    </div>
-    <p style="font-size:12px;color:var(--text-muted)">${state.errorMsg || ""}</p>
-    <button class="btn-retry" onclick="retry()">← Quay lại</button>
-  </div>`;
+    <p>Kiểm tra Apps Script đã deploy với quyền <strong>"Anyone"</strong></p>
+    <div class="config-box">Deploy → Manage deployments → Edit<br>→ Who has access: <code>Anyone</code></div>
+    <p style="font-size:12px;color:var(--text-muted)">${state.errorMsg||""}</p>
+    <button class="btn-retry" onclick="retry()">← Quay lại</button></div>`;
 }
 
-// ──────────────────────────────────────────────────
-//  Actions
-// ──────────────────────────────────────────────────
+// ── Actions ───────────────────────────────────────────────────
 function pick(key) {
   state.answers[state.current] = key;
-
-  // Cập nhật tại chỗ — không render() lại toàn trang để tránh nhảy/scroll
+  // Cập nhật DOM tại chỗ, không render() để tránh nhảy trang
   document.querySelectorAll(".opt-btn").forEach(btn => {
     const k = btn.querySelector(".opt-key").textContent.trim().toLowerCase();
-    btn.classList.toggle("selected", k === key);
+    btn.classList.toggle("selected", k===key);
   });
-
   const hint = document.getElementById("chosenHint");
   if (hint) hint.innerHTML = `✓ Đã chọn đáp án <strong>${key.toUpperCase()}</strong> &nbsp;·&nbsp; <em>Nhấn đáp án khác để thay đổi</em>`;
-
-  // Cập nhật số câu đã làm ở topbar
   const done = Object.keys(state.answers).length;
   const doneEls = document.querySelectorAll(".progress-text span");
   if (doneEls[1]) doneEls[1].textContent = done;
-
-  // Đánh dấu dot hiện tại là đã trả lời
   const dot = document.querySelector(".dot.current");
   if (dot) dot.classList.add("answered");
-
-  // Cập nhật chip PL / CM
-  const plDone = state.questions.filter((qq,i) => state.answers[i] !== undefined && qq.section === "phap_luat").length;
-  const cmDone = state.questions.filter((qq,i) => state.answers[i] !== undefined && qq.section !== "phap_luat").length;
-  const plChip = document.querySelector(".score-chip.pl span");
-  const cmChip = document.querySelector(".score-chip.cm span");
-  if (plChip) plChip.textContent = plDone + "/" + MAX_PL;
-  if (cmChip) cmChip.textContent = cmDone + "/" + MAX_CM;
+  const plcDone = state.questions.filter((qq,i)=>state.answers[i]!==undefined&&qq.section==="phap_luat_chung").length;
+  const plrDone = state.questions.filter((qq,i)=>state.answers[i]!==undefined&&qq.section==="phap_luat_rieng").length;
+  const cmDone  = state.questions.filter((qq,i)=>state.answers[i]!==undefined&&qq.section==="chuyen_mon").length;
+  const c1=document.getElementById("chip-plc"); if(c1) c1.textContent=plcDone+"/"+PL_CHUNG_COUNT;
+  const c2=document.getElementById("chip-plr"); if(c2) c2.textContent=plrDone+"/"+PL_RIENG_COUNT;
+  const c3=document.getElementById("chip-cm");  if(c3) c3.textContent=cmDone+"/"+MAX_CM;
 }
 
 function go(i) {
-  if (i < 0 || i >= state.questions.length) return;
-  state.current = i;
-  render();
+  if (i<0||i>=state.questions.length) return;
+  state.current=i; render();
 }
-
 function jumpNext() {
-  for (let i = state.current + 1; i < state.questions.length; i++) {
-    if (state.answers[i] === undefined) { go(i); return; }
-  }
-  for (let i = 0; i < state.current; i++) {
-    if (state.answers[i] === undefined) { go(i); return; }
-  }
+  for (let i=state.current+1;i<state.questions.length;i++) { if (state.answers[i]===undefined){go(i);return;} }
+  for (let i=0;i<state.current;i++) { if (state.answers[i]===undefined){go(i);return;} }
   alert("Đã trả lời tất cả câu hỏi!");
 }
 
